@@ -20,7 +20,6 @@ from .traffic_signal import TrafficSignal
 class SumoEnvironment(MultiAgentEnv):
     """
     SUMO Environment for Traffic Signal Control
-
     :param net_file: (str) SUMO .net.xml file
     :param route_file: (str) SUMO .rou.xml file
     :param phases: (traci.trafficlight.Phase list) Traffic Signal phases definition
@@ -68,7 +67,6 @@ class SumoEnvironment(MultiAgentEnv):
         Default observation space is a vector R^(#greenPhases + 1 + 2 * #lanes)
         s = [current phase one-hot encoded, elapsedTime / maxGreenTime, density for each lane, queue for each lane]
         You can change this by modifing self.observation_space and the method _compute_observations()
-
         Action space is which green phase is going to be open for the next delta_time seconds
         """
         self.observation_space = spaces.Box(low=np.zeros(self.num_green_phases + 1 + 2*self.lanes_per_ts), high=np.ones(self.num_green_phases + 1 + 2*self.lanes_per_ts))
@@ -90,7 +88,7 @@ class SumoEnvironment(MultiAgentEnv):
         
     def reset(self):
         if self.run != 0:
-            self.save_csv()
+            self.save_csv(self.out_csv_name, self.run)
         self.run += 1
         self.metrics = []
 
@@ -284,8 +282,7 @@ class SumoEnvironment(MultiAgentEnv):
             value = value // self.radix_factors[i]
         return res
 
-    def save_csv(self):
-        if self.out_csv_name is not None:
+    def save_csv(self, out_csv_name, run):
+        if out_csv_name is not None:
             df = pd.DataFrame(self.metrics)
-            df.to_csv(self.out_csv_name + '_run{}'.format(self.run) + '.csv', index=False)
-
+            df.to_csv(out_csv_name + '_run{}'.format(run) + '.csv', index=False)
