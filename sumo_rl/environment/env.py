@@ -84,7 +84,7 @@ class SumoEnvironment(MultiAgentEnv):
         self.radix_factors = [s.n for s in self.discrete_observation_space.spaces]
         self.run = 0
         self.metrics = []
-        self.out_csv_name = out_csv_name + '_'+str(np.random.randint(0, 10))
+        self.out_csv_name = out_csv_name
 
         traci.close()
         

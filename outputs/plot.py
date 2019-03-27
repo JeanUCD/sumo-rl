@@ -28,11 +28,11 @@ def plot_figure(figsize=(12, 9), x_label='', y_label='', title=''):
     ax = plt.subplot()
 
     # manually change this:
-    plt.xlim([380, 399900])
+    #plt.xlim([380, 99900])
     #plt.yticks([0]+[x for x in range(1500, 3001, 250)])
     #plt.ylim([1500, 3001])
-    for i in range(0,400000,100000):
-        plt.axvline(x=i, color='k', linestyle='--')
+    #for i in range(0,400000,100000):
+    #    plt.axvline(x=i, color='k', linestyle='--')
     #plt.axvline(x=25000, color='k', linestyle='--')
     #plt.axvline(x=50000, color='k', linestyle='--')
     #plt.axvline(x=75000, color='k', linestyle='--')
@@ -75,7 +75,7 @@ if __name__ == '__main__':
                 main_df = pd.concat((main_df, df))
 
         steps = main_df.groupby('step_time').total_stopped.mean().keys()
-        mean = moving_average(main_df.groupby('step_time').mean()['total_stopped'], window_size=args.window)
+        mean = moving_average(main_df.groupby('step_time').mean()['total_wait_time'], window_size=args.window)
         #sem = moving_average(main_df.groupby('step_time').sem()['total_wait_time'], window_size=args.window)
         std = moving_average(main_df.groupby('step_time').std()['total_wait_time'], window_size=args.window)
 
@@ -86,5 +86,6 @@ if __name__ == '__main__':
 
     if args.label is not None:
         plt.legend()
+        
     plt.savefig("saved.pdf", bbox_inches="tight")
     plt.show()

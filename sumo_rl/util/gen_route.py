@@ -107,4 +107,4 @@ def write_route_file(file, end, step):
         f.write('''</routes>''')
 
 if __name__ == '__main__':
-    write_route_file('nets/2way-single-intersection/single-intersection-gen.rou.xml', 400000, 100000)
+    write_route_file('nets/2way-single-intersection/single-intersection-gen-m.rou.xml', 10000, 10000)
