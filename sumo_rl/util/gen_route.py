@@ -16,7 +16,7 @@ v =  '''<flow id="flow_ns_c" route="route_ns" begin="bb" end="fim" vehsPerHour="
     <flow id="flow_we_c" route="route_we" begin="bb" end="fim" vehsPerHour="150" departSpeed="max" departLane="best"/>
     <flow id="flow_ws_c" route="route_ws" begin="bb" end="fim" vehsPerHour="150" departSpeed="max" departLane="best"/>'''
 
-h =  '''<flow id="flow_ns_c" route="route_ns" begin="bb" end="fim" vehsPerHour="112.5" departSpeed="max" departLane="best"/>
+v =  '''<flow id="flow_ns_c" route="route_ns" begin="bb" end="fim" vehsPerHour="112.5" departSpeed="max" departLane="best"/>
     <flow id="flow_nw_c" route="route_nw" begin="bb" end="fim" vehsPerHour="112.5" departSpeed="max" departLane="best"/>
     <flow id="flow_ne_c" route="route_ne" begin="bb" end="fim" vehsPerHour="225" departSpeed="max" departLane="best"/>
     <flow id="flow_sw_c" route="route_sw" begin="bb" end="fim" vehsPerHour="225" departSpeed="max" departLane="best"/>
@@ -63,4 +63,4 @@ def write_route_file(file, end, step):
         f.write('''</routes>''')
 
 if __name__ == '__main__':
-    write_route_file('nets/2way-single-intersection/single-intersection-gen-hmhm.rou.xml', 400000, 100000)
+    write_route_file('nets/2way-single-intersection/single-intersection-gen-m-400k.rou.xml', 400000, 400000)

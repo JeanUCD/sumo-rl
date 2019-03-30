@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     # multiprocess environment
     n_cpu = 2
-    env = SubprocVecEnv([lambda: SumoEnvironment(net_file='nets/2way-single-intersection/single-intersection.net.xml',
+    """ env = SubprocVecEnv([lambda: SumoEnvironment(net_file='nets/2way-single-intersection/single-intersection.net.xml',
                                         route_file='nets/2way-single-intersection/single-intersection-gen-hmhm.rou.xml',
                                         out_csv_name='outputs/2way-single-intersection/a2c-contexts-hmhm-400k',
                                         single_agent=True,
@@ -78,7 +78,7 @@ if __name__ == '__main__':
                                             traci.trafficlight.Phase(2000, "rrryyrrrryyr"),
                                             traci.trafficlight.Phase(32000, "rrrrrGrrrrrG"), 
                                             traci.trafficlight.Phase(2000, "rrrrryrrrrry")
-                                            ]) for i in range(n_cpu)])
+                                            ]) for i in range(n_cpu)]) """
     envm = SubprocVecEnv([lambda: SumoEnvironment(net_file='nets/2way-single-intersection/single-intersection.net.xml',
                                     route_file='nets/2way-single-intersection/single-intersection-gen-m.rou.xml',
                                     out_csv_name='outputs/2way-single-intersection/a2c-contexts-m-50k',
@@ -97,11 +97,15 @@ if __name__ == '__main__':
                                         traci.trafficlight.Phase(2000, "rrryyrrrryyr"),
                                         traci.trafficlight.Phase(32000, "rrrrrGrrrrrG"), 
                                         traci.trafficlight.Phase(2000, "rrrrryrrrrry")
-                                        ]) for i in range(n_cpu)])        
+                                        ]) for i in range(n_cpu)])  
 
-    # HMHM
+    model = A2C(MlpPolicy, envm, verbose=1, learning_rate=0.0001, lr_schedule='constant',  tensorboard_log="./a2c/")
+    model.learn(total_timesteps=650000, tb_log_name="m")
+    model.save('a2c_m')
+
+    """     # HMHM
     model = A2C(MlpPolicy, env, verbose=1, learning_rate=0.0001, lr_schedule='constant',  tensorboard_log="./a2c/")
-    model.learn(total_timesteps=1000000, tb_log_name="hmhm")
+    model.learn(total_timesteps=650000, tb_log_name="hmhm")
     model.save('a2c_hmhm')
 
     
@@ -109,7 +113,7 @@ if __name__ == '__main__':
     model.learn(total_timesteps=50000, tb_log_name="h")
     
     model.set_env(envm)
-    model.learn(total_timesteps=50000, tb_log_name="m")
+    model.learn(total_timesteps=50000, tb_log_name="m") """
 
 
     #envh.env_method('save_csv')
