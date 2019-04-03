@@ -38,8 +38,8 @@ def plot_figure(figsize=(12, 9), x_label='', y_label='', title=''):
     #plt.xlim([380, 399900])
     #plt.yticks([0]+[x for x in range(1500, 3001, 250)])
     #plt.ylim([1500, 3001])
-    for i in range(0,400000,100000):
-        plt.axvline(x=i, color='k', linestyle='--')
+    #for i in range(0,400000,100000):
+    #    plt.axvline(x=i, color='k', linestyle='--')
     #plt.axvline(x=25000, color='k', linestyle='--')
     #plt.axvline(x=50000, color='k', linestyle='--')
     #plt.axvline(x=75000, color='k', linestyle='--')

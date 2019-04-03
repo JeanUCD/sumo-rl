@@ -39,7 +39,8 @@ class SumoEnvironment(MultiAgentEnv):
 
         self._net = net_file
         self._route = route_file
-        if use_gui:
+        self.use_gui = use_gui
+        if self.use_gui:
             self._sumo_binary = sumolib.checkBinary('sumo-gui')
         else:
             self._sumo_binary = sumolib.checkBinary('sumo')
@@ -98,6 +99,8 @@ class SumoEnvironment(MultiAgentEnv):
                      '--max-depart-delay', str(self.max_depart_delay), 
                      '--waiting-time-memory', '10000', 
                      '--random']
+        if self.use_gui:
+            sumo_cmd.append('--start')
         traci.start(sumo_cmd)
 
         for ts in self.ts_ids:
