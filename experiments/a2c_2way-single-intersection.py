@@ -16,12 +16,11 @@ from sumo_rl.environment.env import SumoEnvironment
 from sumo_rl.util.gen_route import write_route_file
 import traci
 
-from stable_baselines.common.policies import MlpPolicy
-from stable_baselines.common.vec_env import SubprocVecEnv
-from stable_baselines import A2C
+from stable_baselines2.common.policies import MlpPolicy
+from stable_baselines2.common.vec_env import SubprocVecEnv
+from stable_baselines2 import A2C
 
 metric = []
-step = 1
 
 def callback(_locals, _globals):
     """
@@ -29,11 +28,20 @@ def callback(_locals, _globals):
     :param _locals: (dict)
     :param _globals: (dict)
     """
-    global step, metric
-    r = _locals['self'].env.get_attr('last_reward')[0]['t']
-    metric.append({'step': step, 'reward': r})
+    global metric
+    t = _locals['self'].env.get_attr('sim_step')[0]
+   
+    if t == 100000 or t == 300000:
+        data, params = A2C._load_from_file('a2c_m')
 
-    step +=1
+        model = _locals['self']
+        restores = []
+        for param, loaded_p in zip(model.params, params):
+            restores.append(param.assign(loaded_p))
+        model.sess.run(restores)
+
+        print('trocou os pesos!')
+
     return True
 
 
@@ -41,9 +49,9 @@ if __name__ == '__main__':
 
     # multiprocess environment
     n_cpu = 2
-    """env = SubprocVecEnv([lambda: SumoEnvironment(net_file='nets/2way-single-intersection/single-intersection.net.xml',
+    env = SubprocVecEnv([lambda: SumoEnvironment(net_file='nets/2way-single-intersection/single-intersection.net.xml',
                                         route_file='nets/2way-single-intersection/single-intersection-gen-hmhm.rou.xml',
-                                        out_csv_name='outputs/2way-single-intersection/a2c-contexts-hmhm-400k',
+                                        out_csv_name='outputs/2way-single-intersection/a2c-contexts-hmhm-400k-semoraculo',
                                         single_agent=True,
                                         use_gui=False,
                                         num_seconds=400000,
@@ -59,8 +67,8 @@ if __name__ == '__main__':
                                             traci.trafficlight.Phase(2000, "rrryyrrrryyr"),
                                             traci.trafficlight.Phase(32000, "rrrrrGrrrrrG"), 
                                             traci.trafficlight.Phase(2000, "rrrrryrrrrry")
-                                            ]) for i in range(n_cpu)]) """
-    envh = SubprocVecEnv([lambda: SumoEnvironment(net_file='nets/2way-single-intersection/single-intersection.net.xml',
+                                            ]) for i in range(n_cpu)])
+    """envh = SubprocVecEnv([lambda: SumoEnvironment(net_file='nets/2way-single-intersection/single-intersection.net.xml',
                                         route_file='nets/2way-single-intersection/single-intersection-gen-h.rou.xml',
                                         out_csv_name='outputs/2way-single-intersection/a2c-contexts-h-50khmhm',
                                         single_agent=True,
@@ -81,7 +89,7 @@ if __name__ == '__main__':
                                             ]) for i in range(n_cpu)])
     envm = SubprocVecEnv([lambda: SumoEnvironment(net_file='nets/2way-single-intersection/single-intersection.net.xml',
                                     route_file='nets/2way-single-intersection/single-intersection-gen-m.rou.xml',
-                                    out_csv_name='outputs/2way-single-intersection/a2c-contexts-m-50k-exploithmhm',
+                                    out_csv_name='outputs/2way-single-intersection/a2c-contexts-m-50k-teste',
                                     single_agent=True,
                                     use_gui=True,
                                     num_seconds=50000,
@@ -97,13 +105,12 @@ if __name__ == '__main__':
                                         traci.trafficlight.Phase(2000, "rrryyrrrryyr"),
                                         traci.trafficlight.Phase(32000, "rrrrrGrrrrrG"), 
                                         traci.trafficlight.Phase(2000, "rrrrryrrrrry")
-                                        ]) for i in range(n_cpu)])  
+                                        ]) for i in range(n_cpu)])  """ 
 
 
-    model = A2C.load('a2c_hmhm', envh, verbose=1, learning_rate=0.0001, lr_schedule='constant',  tensorboard_log="./a2c/")
-    model.learn(total_timesteps=25000, tb_log_name="h-exploithmhm")
-    model.set_env(envm)
-    model.learn(total_timesteps=50000, tb_log_name="m-exploithmhm")
+    model = A2C.load('a2c_hmhm', env, verbose=1, learning_rate=0.0001, lr_schedule='constant',  tensorboard_log="./a2c/")
+    model.learn(total_timesteps=1000000, tb_log_name="hmhm-semoraculo", reset_num_timesteps=False)
+
 
     """     # HMHM
     model = A2C(MlpPolicy, env, verbose=1, learning_rate=0.0001, lr_schedule='constant',  tensorboard_log="./a2c/")
